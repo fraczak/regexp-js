@@ -98,4 +98,5 @@ function test(e,w){
     return test(div(w.charAt(0),e),w.slice(1));
 }
 
-module.exports = {test: test, context: context};
+test.context = context;
+module.exports = test;
