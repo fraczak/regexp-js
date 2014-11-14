@@ -14,4 +14,6 @@ votre session avec le programme en examinant l'attribue `context` du module.
 
     > testeur.context
 
-
+La version naïve `re-naive.js`, sans normalisation de l'expression
+rationnelle, est aussi fournie. Elle est beaucoup plus courte mais, en
+générale, elle ne va pas marcher pour des mots plus longs.

@@ -22,7 +22,7 @@ function isEmpty(e){
 
 var context = {}; // utilisée pour la mémoisation (Wikipedia?)
 
-// returne expression régulière normalisée équivalente à @e : ex 
+// returne expression régulière normalisée équivalente à @e : ex
 function normalize(e){
     function register(e){
         function toIndex(e){
