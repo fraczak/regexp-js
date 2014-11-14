@@ -56,8 +56,8 @@ function normalize(e){
         else res = {union: args};
     } else if (e.concat) {
         var args = e.concat.map(normalize).reduce(function(acc,x){
-            if (isEmpty(x)) return REJECT;
-            if (isEmpty(acc) || isUnit(x)) return acc;
+            if (isEmpty(x)) return [REJECT];
+            if (isUnit(x) || (acc.length == 1 && isEmpty(acc[0]))) return acc;
             if (x.concat) return acc.concat(x.concat);
             return acc.concat(x) }, [])
         if (args.length == 1) res = args[0];
@@ -86,7 +86,7 @@ function div(a,e) {
                 f = {union:[{concat:[e0,tail]},step(tail)]};
             else
                 f = {concat:[e0,tail]};
-        } else throw "ERROR: in 'step("+JSON.stringify(e)+")' for symbol '"+a+"'";
+        } else throw "ERROR: in 'step("+e+")' for symbol '"+a+"'";
         return e[a] = f
     };
     return step(e);
