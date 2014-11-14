@@ -18,21 +18,16 @@ function isEmpty(e){ return (e.union && e.union.length == 0); };
 function div(a,e){
     function step(e){
         if (isUnit(e) || isEmpty(e)) return REJECT;
-        var f = e[a];
-        if (f) return f;
         if (e.mot){
             if (e.mot.charAt(0) == a) return {mot: e.mot.slice(1)};
-            return REJECT;
-        } else if (e.iter){
-            f = {concat:[step(e.iter),e]};
-        } else if (e.union) {
-            f = {union: e.union.map(step)};
-        } else if (e.concat){
-            var e0 = step(e.concat[0]);
-            var tail = {concat: e.concat.slice(1)};
-            if (accepts(e.concat[0])) f = {union:[{concat:[e0,tail]},step(tail)]};
-            else f = {concat:[e0,tail]}; };
-        return e[a] = f };
+            return REJECT; };
+        if (e.iter) return {concat:[step(e.iter),e]};
+        if (e.union) return {union: e.union.map(step)};
+        // -- if (e.concat)
+        var e0 = step(e.concat[0]);
+        var tail = {concat: e.concat.slice(1)};
+        if (accepts(e.concat[0])) return {union:[{concat:[e0,tail]},step(tail)]};
+        return {concat:[e0,tail]}; };
     return step(e); };
 
 // retourne Booleén 'true' si mot @w : String est dans @e : ex
