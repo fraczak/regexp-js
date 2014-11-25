@@ -1,5 +1,6 @@
-// ex ::= {mot:"."} | {union:ex} | {iter:ex} | {union:[ex,..]} | {concat:[ex,..]}
-var ACCEPT = {concat:[]}, REJECT = {union:[]};
+/* ex ::= {mot:".."} | {iter:ex} | {union:[ex,..]} | {concat:[ex,..]} */
+
+var REJECT = {union:[]};
 
 // returne booléen 'true', si @e : ex (expression régulière) accepte le mot vide
 function accepts(e){
@@ -20,15 +21,23 @@ function div(a,e){
         if (isUnit(e) || isEmpty(e)) return REJECT;
         if (e.mot){
             if (e.mot.charAt(0) == a) return {mot: e.mot.slice(1)};
-            return REJECT; };
-        if (e.iter) return {concat:[step(e.iter),e]};
-        if (e.union) return {union: e.union.map(step)};
-        // -- if (e.concat)
-        var e0 = step(e.concat[0]);
-        var tail = {concat: e.concat.slice(1)};
-        if (accepts(e.concat[0])) return {union:[{concat:[e0,tail]},step(tail)]};
-        return {concat:[e0,tail]}; };
-    return step(e); };
+            return REJECT;
+        } else if (e.iter) {
+            f = {concat:[step(e.iter),e]};
+        } else if (e.union) {
+            f = {union: e.union.map(step)};
+        } else if (e.concat) {
+            var head = e.concat[0], tail = e.concat.slice(1);
+            if (accepts(head))
+                f = {union:[ { concat: [ step(head) ].concat(tail) },
+                             step({ concat: tail }) ]};
+            else
+                f = { concat: [ step(head) ].concat(tail) };
+        } else throw "ERROR: in 'step("+e+")' for symbol '"+a+"'";
+        return e[a] = f
+    };
+    return step(e);
+}
 
 // retourne Booleén 'true' si mot @w : String est dans @e : ex
 function test(e,w){
